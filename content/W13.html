@@ -2,7 +2,7 @@
         <head>
         <title>wcm2022 網際內容管理 KEHUEISIN個人網站</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H1">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,9 +139,59 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Experience: << <a href='Experience:.html'>Previous</a> <a href='onedrive.html'>Next</a> >> onedrive<br /><h1>Github</h1>
-<p><span style="color: #ff00ff;">創建個人及分組網站倉儲：</span><a href="https://github.com/KEHUEISIN/wcm2022">https://github.com/KEHUEISIN/wcm2022</a> ，<a href="https://github.com/KEHUEISIN/wcm2022ag1">https://github.com/KEHUEISIN/wcm2022ag1</a>可自己建紙模組。</p>
-<br />Experience: << <a href='Experience:.html'>Previous</a> <a href='onedrive.html'>Next</a> >> onedrive</div>
+    <div id="tipue_search_content">H1 midterm << <a href='H1 midterm.html'>Previous</a> <br /><h1>W13</h1>
+<!-- 導入 Brython 程式庫 -->
+<script src="./../cmsimde/static/brython.js"></script>
+<script src="./../cmsimde/static/brython_stdlib.js"></script>
+<!-- 啟動 Brython -->
+<script>
+window.onload=function(){brython();}
+</script>
+<p></p>
+<script type="text/python3">
+#print("可執行 Brython")
+# Turtle1 繪圖
+from browser import window, html
+from browser import document as doc
+import turtle
+turtle.set_defaults(
+    turtle_canvas_wrapper = doc['brython_div']
+)
+t = turtle.Turtle()
+t.width(5)
+for c in ['red', '#00ff00', '#fa0', 'rgb(0,0,200)']:
+    t.color(c)
+    t.forward(100)
+    t.left(90)
+# dot() and write() do not require the pen to be down
+t.penup()
+t.goto(-30, -100)
+t.dot(40, 'rgba(255, 0, 0, 0.5')
+t.goto(30, -100)
+t.dot(40, 'rgba(0, 255, 0, 0.5')
+t.goto(0, -70)
+t.dot(40, 'rgba(0, 0, 255, 0.5')
+t.goto(0, 125)
+t.color('purple')
+t.write("這就是 Brython, 網頁上的 Python", font=("Arial", 15, "normal"))
+turtle.done()
+</script>
+<div id="brython_div"></div>
+<p><span style="color: #ff00ff;"><strong>網頁搭建run程式html開頭:</strong></span></p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;!-- 導入 Brython 程式庫 --&gt;
+&lt;script src="./../cmsimde/static/brython.js"&gt;&lt;/script&gt;
+&lt;script src="./../cmsimde/static/brython_stdlib.js"&gt;&lt;/script&gt;
+&lt;!-- 啟動 Brython --&gt;
+&lt;script&gt;
+window.onload=function(){brython();}
+&lt;/script&gt;
+&lt;p&gt;1a&lt;/p&gt;
+&lt;script type="text/python3"&gt;
+#print("可執行 Brython")</pre>
+<p><span style="color: #ff00ff;"><strong>網頁搭建run程式html結尾:</strong></span></p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;/script&gt;
+&lt;div id="brython_div"&gt;&lt;/div&gt;</pre>
+<p><span style="color: #ff00ff;"><strong>搭建run程式影片</strong></span></p></div></div><br />H1 midterm << <a href='H1 midterm.html'>Previous</a> </div>
         
     <!-- footer -->
       <div class="container">
