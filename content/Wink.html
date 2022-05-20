@@ -140,9 +140,34 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">onedrive << <a href='onedrive.html'>Previous</a> <a href='H1 midterm.html'>Next</a> >> H1 midterm<br /><h1>Wink</h1>
-<p>需先錄製一段影片，後到老師所給的網站加入超文件範本，將影片插入我所要放置的頁面，並將超文</p>
-<p>件內的(名稱.mp4)改成自己所設的名稱。</p>
-<br />onedrive << <a href='onedrive.html'>Previous</a> <a href='H1 midterm.html'>Next</a> >> H1 midterm</div>
+<p>需先錄製一段影片，後到老師所給的程式碼加入超文件範本，將影片插入我所要放置的頁面，並將超文</p>
+<p>件內的(名稱.mp4)改成自己所設的名稱。(影片路徑為<span style="background-color: #ffff00;">wcm2022/download</span>s中)</p>
+<p><span style="color: #ff00ff;">下為插入程式碼:</span></p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;script&gt;// &lt;![CDATA[
+var winkVideoData = {
+  dataVersion: 1,
+  frameRate: 10,
+  buttonFrameLength: 5,
+  buttonFrameOffset: 2,
+  frameStops: {
+  },
+};
+// ]]&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;!-- 接下來將 mp4 檔案從 downloads 目錄取出 --&gt;
+&lt;div class="winkVideoContainerClass"&gt;&lt;video width="1008" height="630" autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="./../cmsimde/static" data-varname="winkVideoData" muted="true"&gt;
+&lt;source src="./../downloads/(影片名稱).mp4" type="video/mp4" /&gt;&lt;/video&gt;
+&lt;div class="winkVideoOverlayClass"&gt;&lt;/div&gt;
+&lt;div class="winkVideoControlBarClass"&gt;&lt;button class="winkVideoControlBarPlayButtonClass"&gt;&lt;/button&gt; &lt;button class="winkVideoControlBarPauseButtonClass"&gt;&lt;/button&gt;
+&lt;div class="winkVideoControlBarProgressLeftClass"&gt;&lt;/div&gt;
+&lt;div class="winkVideoControlBarProgressEmptyMiddleClass"&gt;&lt;/div&gt;
+&lt;div class="winkVideoControlBarProgressRightClass"&gt;&lt;/div&gt;
+&lt;div class="winkVideoControlBarProgressFilledMiddleClass"&gt;&lt;/div&gt;
+&lt;div class="winkVideoControlBarProgressThumbClass"&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="winkVideoPlayOverlayClass"&gt;&lt;/div&gt;
+&lt;/div&gt;</pre>
+<p></p><br />onedrive << <a href='onedrive.html'>Previous</a> <a href='H1 midterm.html'>Next</a> >> H1 midterm</div>
         
     <!-- footer -->
       <div class="container">
