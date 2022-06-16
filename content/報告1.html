@@ -2,7 +2,7 @@
         <head>
         <title>wcm2022 網際內容管理 KEHUEISIN個人網站</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H1">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,35 +139,28 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">onedrive << <a href='onedrive.html'>Previous</a> <a href='H1 midterm.html'>Next</a> >> H1 midterm<br /><h1>Wink</h1>
-<p>需先錄製一段影片，後到老師所給的程式碼加入超文件範本，將影片插入我所要放置的頁面，並將超文</p>
-<p>件內的(名稱.mp4)改成自己所設的名稱。(影片路徑為<span style="background-color: #ffff00;">wcm2022/download</span>s中)</p>
-<p><span style="color: #ff00ff;">下為插入程式碼:</span></p>
-<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;script&gt;// &lt;![CDATA[
-var winkVideoData = {
-  dataVersion: 1,
-  frameRate: 10,
-  buttonFrameLength: 5,
-  buttonFrameOffset: 2,
-  frameStops: {
-  },
-};
-// ]]&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;!-- 接下來將 mp4 檔案從 downloads 目錄取出 --&gt;
-&lt;div class="winkVideoContainerClass"&gt;&lt;video width="1008" height="630" autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="./../cmsimde/static" data-varname="winkVideoData" muted="true"&gt;
-&lt;source src="./../downloads/(影片名稱).mp4" type="video/mp4" /&gt;&lt;/video&gt;
-&lt;div class="winkVideoOverlayClass"&gt;&lt;/div&gt;
-&lt;div class="winkVideoControlBarClass"&gt;&lt;button class="winkVideoControlBarPlayButtonClass"&gt;&lt;/button&gt; &lt;button class="winkVideoControlBarPauseButtonClass"&gt;&lt;/button&gt;
-&lt;div class="winkVideoControlBarProgressLeftClass"&gt;&lt;/div&gt;
-&lt;div class="winkVideoControlBarProgressEmptyMiddleClass"&gt;&lt;/div&gt;
-&lt;div class="winkVideoControlBarProgressRightClass"&gt;&lt;/div&gt;
-&lt;div class="winkVideoControlBarProgressFilledMiddleClass"&gt;&lt;/div&gt;
-&lt;div class="winkVideoControlBarProgressThumbClass"&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="winkVideoPlayOverlayClass"&gt;&lt;/div&gt;
-&lt;/div&gt;</pre>
-<br />onedrive << <a href='onedrive.html'>Previous</a> <a href='H1 midterm.html'>Next</a> >> H1 midterm</div>
+    <div id="tipue_search_content">About << <a href='About.html'>Previous</a> <a href='報告2.html'>Next</a> >> 報告2<br /><h1>報告1</h1>
+<p>Tetris 線上遊戲專案報告2</p>
+<p><span style="font-weight: 400;">我發現當我將老師所寫的那一串程式中間直接加入已寫的Tetris程式網頁就出現Tetris這個遊戲的介面，操作結果為下。</span></p>
+<p><span style="font-weight: 400; color: #ff00ff;">配置過程:</span></p>
+<p><span style="font-weight: 400;">先在自己的動態網頁中Edit All加入一個目錄，後點選該目錄的Edit ，進入後在點選Source code插入下列html文字檔中的程式，將其複製到Source code中，在中間加入Tetris程式碼，按下save，在按viewpage回到目錄中，檢查Tetris是否出現在該頁面上，若出現並正常執行則代表成功，後將動態網頁push成靜態網頁看看在動態網頁中能否看到Tetris。</span></p>
+<p><span style="color: #ff00ff;">此為程式html文字檔:</span></p>
+<div id="brython_div">
+<p><span style="font-weight: 400;">&lt;!-- 導入 Brython 程式庫 --&gt;</span></p>
+<p><span style="font-weight: 400;">&lt;script src="./../cmsimde/static/brython.js"</span><span style="color: #0000ff;"><span style="font-weight: 400;">=導入之路徑</span><span style="font-weight: 400;">&gt;&lt;/script&gt;</span></span></p>
+<p><span style="font-weight: 400;">&lt;script src="./../cmsimde/static/brython_stdlib.js"</span><span style="color: #0000ff;"><span style="font-weight: 400;">=導入之路徑</span><span style="font-weight: 400;">&gt;&lt;/script&gt;</span></span></p>
+<p><span style="font-weight: 400;">&lt;!-- 啟動 Brython --&gt;</span></p>
+<p><span style="font-weight: 400;">&lt;script&gt;</span></p>
+<p><span style="font-weight: 400;">window.onload=function(){brython();}</span><span style="color: #0000ff;"><span style="font-weight: 400;">=此</span><span style="font-weight: 400;">方法用于在網頁加載完畢後立即執行的操作</span><span style="font-weight: 400;">&lt;/script&gt;</span></span></p>
+<p><span style="font-weight: 400;">&lt;script type="text/python3"&gt;</span><span style="color: #0000ff;"><span style="font-weight: 400;">=</span><a href="https://stackoverflow.com/questions/48562821/run-python-code-inside-script-tag-of-html-file" style="color: #0000ff;"><span style="font-weight: 400;">在 HTML 文件的 &lt;script&gt; 標記內運行 python 代碼</span></a></span></p>
+<p><span style="font-weight: 400;">#print("可執行 Brython")</span><span style="font-weight: 400;">=用print來執行Brython</span></p>
+<br/>
+<p><span style="font-weight: 400; color: #ff0000;">&lt;&lt;需顯示之遊戲程式碼&gt;&gt;</span></p>
+<br/>
+<p><span style="font-weight: 400;">&lt;/script&gt;</span></p>
+<p><span style="font-weight: 400;">&lt;div id="brython_div"&gt;&lt;/div&gt;</span><span style="font-weight: 400; color: #0000ff;">=在div中使用id，brython_div為自定義的命名</span></p>
+</div>
+<p></p><br />About << <a href='About.html'>Previous</a> <a href='報告2.html'>Next</a> >> 報告2</div>
         
     <!-- footer -->
       <div class="container">
