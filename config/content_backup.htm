@@ -71,8 +71,7 @@ var winkVideoData = {
 <div class="winkVideoControlBarProgressThumbClass"></div>
 </div>
 <div class="winkVideoPlayOverlayClass"></div>
-</div>
-<h2>Wink</h2>
+</div><h2>Wink</h2>
 <p>需先錄製一段影片，後到老師所給的程式碼加入超文件範本，將影片插入我所要放置的頁面，並將超文</p>
 <p>件內的(名稱.mp4)改成自己所設的名稱。(影片路徑為<span style="background-color: #ffff00;">wcm2022/download</span>s中)</p>
 <p><span style="color: #ff00ff;">下為插入程式碼:</span></p>
@@ -130,7 +129,629 @@ var winkVideoData = {
 <h1>W17</h1>
 <p>H1</p>
 <p>網址:<a class="style-scope ytcp-video-info" href="https://youtu.be/QtdPbtvFLhY" target="_blank">https://youtu.be/QtdPbtvFLhY</a></p>
-<p>心得:從一開始的不熟悉，遊玩了3~4次後才真正上手，對於新手來說此程式速度還是過於的快，需放慢速度才可釐清每一步的走法。</p><h1>W13</h1>
+<p><span style="background-color: #ffff00;">心得:</span>從一開始的不熟悉，遊玩了3~4次後才真正上手，對於新手來說此程式速度還是過於的快，需放慢速度才可釐清每一步的走法。</p>
+<h1>期末任務1</h1>
+<!-- 導入 Brython 程式庫 -->
+<script src="/static/brython.js"></script>
+<script src="/static/brython_stdlib.js"></script>
+<!-- 啟動 Brython -->
+<script>
+window.onload=function(){brython();}
+</script>
+<script type="text/python3">
+#print("可執行 Brython")
+
+# from https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318
+# 暫時關閉 system proxy 設定後,  pip install pygame
+#import pygame
+import random
+# 以下為 Brython 新增
+from browser import document as doc
+from browser import html
+import browser.timer
+
+# 利用 html 建立一個 CANVAS 標註物件, 與變數 canvas 對應
+canvas = html.CANVAS(width = 400, height = 500, id="canvas")
+brython_div = doc["brython_div"]
+brython_div <= canvas
+ctx = canvas.getContext("2d")
+
+ctx.translate(0,canvas.height)
+ctx.scale(1,-1)
+
+
+colors = [
+    (0, 0, 0),
+    (120, 37, 179),
+    (100, 179, 179),
+    (80, 34, 22),
+    (80, 134, 22),
+    (180, 34, 22),
+    (180, 34, 122),
+]
+
+
+class Figure:
+    x = 0
+    y = 0
+
+    figures = [
+        [[1, 5, 9, 13], [4, 5, 6, 7]],
+        [[4, 5, 9, 10], [2, 6, 5, 9]],
+        [[6, 7, 9, 10], [1, 5, 6, 10]],
+        [[1, 2, 5, 9], [0, 4, 5, 6], [1, 5, 9, 8], [4, 5, 6, 10]],
+        [[1, 2, 6, 10], [5, 6, 7, 9], [2, 6, 10, 11], [3, 5, 6, 7]],
+        [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
+        [[1, 2, 5, 6]],
+    ]
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.type = random.randint(0, len(self.figures) - 1)
+        self.color = random.randint(1, len(colors) - 1)
+        self.rotation = 0
+
+    def image(self):
+        return self.figures[self.type][self.rotation]
+
+    def rotate(self):
+        self.rotation = (self.rotation + 1) % len(self.figures[self.type])
+
+
+def update_score(score):
+    score_doc.innerHTML = "Score: " + str(score)
+
+        
+class Tetris:
+    level = 2
+    score = 0
+    state = "start"
+    field = []
+    height = 0
+    width = 0
+    x = 100
+    y = 60
+    zoom = 20
+    figure = None
+
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.field = []
+        self.score = 0
+        self.state = "start"
+        for i in range(height):
+            new_line = []
+            for j in range(width):
+                # 起始時每一個都填入 0
+                new_line.append(0)
+            self.field.append(new_line)
+
+    def new_figure(self):
+        self.figure = Figure(3, 0)
+
+    def intersects(self):
+        intersection = False
+        for i in range(4):
+            for j in range(4):
+                if i * 4 + j in self.figure.image():
+                    # block 到達底部, 左右兩邊界, 或該座標有其他 block
+                    if i + self.figure.y > self.height - 1 or \
+                            j + self.figure.x > self.width - 1 or \
+                            j + self.figure.x < 0 or \
+                            self.field[i + self.figure.y][j + self.figure.x] > 0:
+                        intersection = True
+                        
+        return intersection
+
+    def break_lines(self):
+        lines = 0
+        for i in range(1, self.height):
+            zeros = 0
+            for j in range(self.width):
+                if self.field[i][j] == 0:
+                    zeros += 1
+            if zeros == 0:
+                lines += 1
+                for i1 in range(i, 1, -1):
+                    for j in range(self.width):
+                        self.field[i1][j] = self.field[i1 - 1][j]
+        self.score += lines ** 2
+        update_score(self.score)
+    
+
+    def go_space(self):
+        while not self.intersects():
+            self.figure.y += 1
+        self.figure.y -= 1
+        self.freeze()
+
+    def go_down(self):
+        self.figure.y += 1
+        if self.intersects():
+            self.figure.y -= 1
+            self.freeze()
+
+    def freeze(self):
+        for i in range(4):
+            for j in range(4):
+                if i * 4 + j in self.figure.image():
+                    self.field[i + self.figure.y][j + self.figure.x] = self.figure.color
+        self.break_lines()
+        self.new_figure()
+        if self.intersects():
+            self.state = "gameover"
+
+    def go_side(self, dx):
+        old_x = self.figure.x
+        self.figure.x += dx
+        if self.intersects():
+            self.figure.x = old_x
+
+    def rotate(self):
+        old_rotation = self.figure.rotation
+        self.figure.rotate()
+        if self.intersects():
+            self.figure.rotation = old_rotation
+
+# Define some colors
+# from https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code
+BLACK = '#%02x%02x%02x' % (0, 0, 0)
+WHITE = '#%02x%02x%02x' % (255, 255, 255)
+GRAY = '#%02x%02x%02x' % (128, 128, 128)
+
+done = False
+fps = 25
+game = Tetris(20, 10)
+counter = 0
+
+pressing_down = False
+
+def key_down(eve):
+    key = eve.keyCode
+    #if event.type == pygame.QUIT:
+    # 32 is pause
+    if key == 32:
+        done = True
+    # 82 is r key to rotate
+    if key == 82:
+        game.rotate()
+    # 40 is down key
+    if key == 40:
+        pressing_down = True
+    # 37 is left key
+    if key == 37:
+        game.go_side(-1)
+    # 39 is right key
+    if key == 39:
+        game.go_side(1)
+    # 68 is d key to move block to bottom
+    if key == 68:
+        game.go_space()
+    # 27 is escape
+    # reset the game
+    if key == 27:
+        game.__init__(20, 10)
+
+def key_up(eve):
+    key = eve.keyCode
+    # 40 is down key
+    if key == 40:
+        pressing_down = False
+
+#while not done:
+def do_game():
+    global counter
+    if game.figure is None:
+        game.new_figure()
+    counter += 1
+    if counter > 100000:
+        counter = 0
+    if counter % (fps // game.level // 2) == 0 or pressing_down:
+        if game.state == "start":
+            game.go_down()
+    
+    for i in range(game.height):
+        for j in range(game.width):
+            ctx.fillStyle = WHITE
+            #ctx.scale(game.zoom, game.zoom)
+            ctx.fillRect(game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom)
+            if game.field[i][j] > 0:
+                ctx.fillStyle = '#%02x%02x%02x' % colors[game.field[i][j]]
+                ctx.fillRect(game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom - 1)
+                
+            ctx.lineWidth = 1
+            ctx.strokeStyle = GRAY
+            ctx.beginPath()
+            ctx.rect(game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom)
+            ctx.stroke()
+    if game.figure is not None:
+        for i in range(4):
+            for j in range(4):
+                p = i * 4 + j
+                if p in game.figure.image():
+                    ctx.fillStyle = '#%02x%02x%02x' % colors[game.figure.color]
+                    ctx.fillRect(game.x + game.zoom * (j + game.figure.x) + 1,
+                                      game.y + game.zoom * (i + game.figure.y) + 1,
+                                      game.zoom - 2, game.zoom - 2)
+                   
+score_doc = html.DIV("Score:")
+score_doc.id = "Score:"
+brython_div <= score_doc
+
+
+doc.addEventListener("keydown", key_down)
+doc.addEventListener("keyup", key_up)
+browser.timer.set_interval(do_game, fps)
+</script>
+<div id="brython_div"></div>
+<p>wink影片</p>
+<p>因為軟體出現了問題，無法再網頁加入wink</p>
+<p><span style="background-color: #ffff00;">心得:</span>參考同學的程式，上網找到的資料非常的雜，無法確定哪一個是真正的答案，所以不太清楚自己所理解的程式內容的正確性，畢竟每個人理解出來的內容都不一致，很多東西都有不同層面上的思考方向，雖然雜，但其實都是一個問題從不同地方做延伸。</p><h1>期末任務2</h1>
+<!-- 導入 Brython 程式庫 -->
+<script src="/static/brython.js"></script>
+<script src="/static/brython_stdlib.js"></script>
+<!-- 啟動 Brython -->
+<script>
+window.onload=function(){brython();}
+</script>
+<script type="text/python3">
+#print("可執行 Brython")
+
+# from https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318
+# 改為可自動執行模式
+import random
+# 以下為 Brython 新增
+from browser import document as doc
+from browser import html
+import browser.timer
+
+def intersects(game_field, x, y, game_width, game_height, game_figure_image):
+    intersection = False
+    for i in range(4):
+        for j in range(4):
+            if i * 4 + j in game_figure_image:
+                if i + y > game_height - 1 or \
+                        j + x > game_width - 1 or \
+                        j + x < 0 or \
+                        game_field[i + y][j + x] > 0:
+                    intersection = True
+    return intersection
+
+def simulate(game_field, x, y, game_width, game_height, game_figure_image):
+    while not intersects(game_field, x, y, game_width, game_height, game_figure_image):
+        y += 1
+    y -= 1
+
+    height = game_height
+    holes = 0
+    filled = []
+    breaks = 0
+    for i in range(game_height-1, -1, -1):
+        it_is_full = True
+        prev_holes = holes
+        for j in range(game_width):
+            u = '_'
+            if game_field[i][j] != 0:
+                u = "x"
+            for ii in range(4):
+                for jj in range(4):
+                    if ii * 4 + jj in game_figure_image:
+                        if jj + x == j and ii + y == i:
+                            u = "x"
+
+            if u == "x" and i < height:
+                height = i
+            if u == "x":
+                filled.append((i, j))
+                for k in range(i, game_height):
+                    if (k, j) not in filled:
+                        holes += 1
+                        filled.append((k,j))
+            else:
+                it_is_full = False
+        if it_is_full:
+            breaks += 1
+            holes = prev_holes
+
+    return holes, game_height-height-breaks
+
+def best_rotation_position(game_field, game_figure, game_width, game_height):
+    best_height = game_height
+    best_holes = game_height*game_width
+    best_position = None
+    best_rotation = None
+
+    for rotation in range(len(game_figure.figures[game_figure.type])):
+        fig = game_figure.figures[game_figure.type][rotation]
+        for j in range(-3, game_width):
+            if not intersects(
+                    game_field,
+                    j,
+                    0,
+                    game_width,
+                    game_height,
+                    fig):
+                holes, height = simulate(
+                    game_field,
+                    j,
+                    0,
+                    game_width,
+                    game_height,
+                    fig
+                )
+                if best_position is None or best_holes > holes or \
+                    best_holes == holes and best_height > height:
+                    best_height = height
+                    best_holes = holes
+                    best_position = j
+                    best_rotation = rotation
+    return best_rotation, best_position
+
+# 建立一個自動執行的函式
+# step 1
+'''
+def run_ai():
+    game.rotate()
+'''
+#step 2
+def run_ai(game_field, game_figure, game_width, game_height):
+    rotation, position = best_rotation_position(game_field, game_figure, game_width, game_height)
+    if game_figure.rotation != rotation:
+        game.rotate()
+    elif game_figure.x < position:
+        game.go_side(1)
+    elif game_figure.x > position:
+        game.go_side(-1)
+    else:
+        game.go_space()
+
+# 利用 html 建立一個 CANVAS 標註物件, 與變數 canvas 對應
+canvas = html.CANVAS(width = 400, height = 500, id="canvas")
+brython_div = doc["brython_div"]
+brython_div <= canvas
+ctx = canvas.getContext("2d")
+ctx.translate(0,canvas.height)#將y方向零點設置在原本高的底部
+ctx.scale(1,-1)#將y方向縮放-1倍
+
+colors = [
+    (0, 0, 0),
+    (120, 37, 179),
+    (100, 179, 179),
+    (80, 34, 22),
+    (80, 134, 22),
+    (180, 34, 22),
+    (180, 34, 122),
+]
+
+
+class Figure:
+    x = 0
+    y = 0
+
+    figures = [
+        [[1, 5, 9, 13], [4, 5, 6, 7]],
+        [[4, 5, 9, 10], [2, 6, 5, 9]],
+        [[6, 7, 9, 10], [1, 5, 6, 10]],
+        [[1, 2, 5, 9], [0, 4, 5, 6], [1, 5, 9, 8], [4, 5, 6, 10]],
+        [[1, 2, 6, 10], [5, 6, 7, 9], [2, 6, 10, 11], [3, 5, 6, 7]],
+        [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
+        [[1, 2, 5, 6]],
+    ]
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.type = random.randint(0, len(self.figures) - 1)
+        self.color = random.randint(1, len(colors) - 1)
+        self.rotation = 0
+
+    def image(self):
+        return self.figures[self.type][self.rotation]
+
+    def rotate(self):
+        self.rotation = (self.rotation + 1) % len(self.figures[self.type])
+        
+def update_score(score):
+    score_doc.innerHTML = "Score: " + str(score)
+
+class Tetris:
+    level = 2
+    score = 0
+    state = "start"
+    field = []
+    height = 0
+    width = 0
+    x = 100
+    y = 60
+    zoom = 20
+    figure = None
+
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.field = []
+        self.score = 0
+        self.state = "start"
+        for i in range(height):
+            new_line = []
+            for j in range(width):
+                # 起始時每一個都填入 0
+                new_line.append(0)
+            self.field.append(new_line)
+
+    def new_figure(self):
+        self.figure = Figure(3, 0)
+
+    def intersects(self):
+        intersection = False
+        for i in range(4):
+            for j in range(4):
+                if i * 4 + j in self.figure.image():
+                    # block 到達底部, 左右兩邊界, 或該座標有其他 block
+                    if i + self.figure.y > self.height - 1 or \
+                            j + self.figure.x > self.width - 1 or \
+                            j + self.figure.x < 0 or \
+                            self.field[i + self.figure.y][j + self.figure.x] > 0:
+                        intersection = True
+        return intersection
+
+    def break_lines(self):
+        lines = 0
+        for i in range(1, self.height):
+            zeros = 0
+            for j in range(self.width):
+                if self.field[i][j] == 0:
+                    zeros += 1
+            if zeros == 0:
+                lines += 1
+                for i1 in range(i, 1, -1):
+                    for j in range(self.width):
+                        self.field[i1][j] = self.field[i1 - 1][j]
+        self.score += lines ** 2
+        update_score(self.score)
+
+    def go_space(self):
+        while not self.intersects():
+            self.figure.y += 1
+        self.figure.y -= 1
+        self.freeze()
+
+    def go_down(self):
+        self.figure.y += 1
+        if self.intersects():
+            self.figure.y -= 1
+            self.freeze()
+
+    def freeze(self):
+        for i in range(4):
+            for j in range(4):
+                if i * 4 + j in self.figure.image():
+                    self.field[i + self.figure.y][j + self.figure.x] = self.figure.color
+        self.break_lines()
+        self.new_figure()
+        if self.intersects():
+            self.state = "gameover"
+
+    def go_side(self, dx):
+        old_x = self.figure.x
+        self.figure.x += dx
+        if self.intersects():
+            self.figure.x = old_x
+
+    def rotate(self):
+        old_rotation = self.figure.rotation
+        self.figure.rotate()
+        if self.intersects():
+            self.figure.rotation = old_rotation
+
+# Define some colors
+# from https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code
+BLACK = '#%02x%02x%02x' % (0, 0, 0)
+WHITE = '#%02x%02x%02x' % (255, 255, 255)
+GRAY = '#%02x%02x%02x' % (128, 128, 128)
+RED = '#%02x%02x%02x' % (255, 0, 0)
+
+done = False
+fps = 5
+game = Tetris(20, 10)
+counter = 0
+
+pressing_down = False
+
+def key_down(eve):
+    key = eve.keyCode
+    #if event.type == pygame.QUIT:
+    # 32 is pause
+    if key == 32:
+        done = True
+    # 82 is r key to rotate
+    if key == 82:
+        game.rotate()
+    # 40 is down key
+    if key == 40:
+        pressing_down = True
+    # 37 is left key
+    if key == 37:
+        game.go_side(-1)
+    # 39 is right key
+    if key == 39:
+        game.go_side(1)
+    # 68 is d key to move block to bottom
+    if key == 68:
+        game.go_space()
+    # 27 is escape
+    # reset the game
+    if key == 27:
+        # clear the previous score
+        ctx.fillStyle = WHITE
+        ctx.fillRect( 100, 0, 200, 50)
+        game.__init__(20, 10)
+
+def key_up(eve):
+    key = eve.keyCode
+    # 40 is down key
+    if key == 40:
+        pressing_down = False
+
+#while not done:
+def do_game():
+    global counter
+    if game.figure is None:
+        game.new_figure()
+    counter += 1
+    if counter > 100000:
+        counter = 0
+    if counter % (fps // game.level // 2) == 0 or pressing_down:
+        if game.state == "start":
+            game.go_down()
+            run_ai(game.field, game.figure, game.width, game.height)
+    
+    for i in range(game.height):
+        for j in range(game.width):
+            ctx.fillStyle = WHITE
+            #ctx.scale(game.zoom, game.zoom)
+            ctx.fillRect(game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom)
+            if game.field[i][j] > 0:
+                ctx.fillStyle = '#%02x%02x%02x' % colors[game.field[i][j]]
+                ctx.fillRect(game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom - 1)
+            ctx.lineWidth = 1
+            ctx.strokeStyle = GRAY
+            ctx.beginPath()
+            ctx.rect(game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom)
+            ctx.stroke()
+    if game.figure is not None:
+        for i in range(4):
+            for j in range(4):
+                p = i * 4 + j
+                if p in game.figure.image():
+                    ctx.fillStyle = '#%02x%02x%02x' % colors[game.figure.color]
+                    ctx.fillRect(game.x + game.zoom * (j + game.figure.x) + 1,
+                                      game.y + game.zoom * (i + game.figure.y) + 1,
+                                      game.zoom - 2, game.zoom - 2)
+
+
+    
+    # 如果遊戲狀態為gameover，顯示Game Over及Press ESC，並將文字設定為紅色
+    if game.state == "gameover":
+        ctx.fillStyle = RED
+        ctx.fillText("Game Over", 100, 200)
+        ctx.fillText("Press ESC", 105, 265)
+        ctx.fillStyle = WHITE
+        ctx.fillRect( 100, 0, 200, 50)
+        game.__init__(20, 10)
+        
+score_doc = html.DIV("Score:")
+score_doc.id = "Score:"
+brython_div <= score_doc
+
+doc.addEventListener("keydown", key_down)
+doc.addEventListener("keyup", key_up)
+browser.timer.set_interval(do_game, fps)
+</script>
+<div id="brython_div"></div>
+<p></p><h1>W13</h1>
 <p>俄羅斯方塊</p>
 <!-- 導入 Brython 程式庫 -->
 <p>
