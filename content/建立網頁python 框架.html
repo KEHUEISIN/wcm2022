@@ -2,7 +2,7 @@
         <head>
         <title>wcm2022 網際內容管理 KEHUEISIN個人網站</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H1">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,36 +139,181 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Github << <a href='Github.html'>Previous</a> <a href='Wink.html'>Next</a> >> Wink<br /><h1>onedrive</h1>
-<p>因其只有5GB，當備份太多時，則電腦內的磁碟會無發運行。</p>
-<p><span style="background-color: #ffcc00;">解決方法</span>:進入ONEDRIVE設定內，管理備份將它停止備份資料夾，後再到網站登入，將ONEDRIVE裡備份的資料夾全部刪掉，就可。</p>
-<p>影片同下:</p>
-<p>
+    <div id="tipue_search_content">報告2 << <a href='報告2.html'>Previous</a> <a href='Experience:.html'>Next</a> >> Experience:<br /><h1>建立網頁python 框架</h1>
+<!-- 導入 brython 程式庫 -->
+<script src="./../cmsimde/static/brython.js"></script>
+<script src="./../cmsimde/static/brython_stdlib.js"></script>
+<!-- 啟動 Brython -->
 <script>
-var winkVideoData = {
-  dataVersion: 1,
-  frameRate: 10,
-  buttonFrameLength: 5,
-  buttonFrameOffset: 2,
-  frameStops: {
-  },
-};
+window.onload=function(){
+brython({debug:1, pythonpath:['./../cmsimde/static/','./../downloads/py/']});
+}
+</script>
+<p><!-- 導入 FileSaver 與 filereader --></p>
+<p>
+<script src="./../cmsimde/static/ace/FileSaver.min.js" type="text/javascript"></script>
+<script src="./../cmsimde/static/ace/filereader.js" type="text/javascript"></script>
+</p>
+<p><!-- 導入 ace --></p>
+<p>
+<script src="./../cmsimde/static/ace/ace.js" type="text/javascript"></script>
+<script src="./../cmsimde/static/ace/ext-language_tools.js" type="text/javascript"></script>
+<script src="./../cmsimde/static/ace/mode-python3.js" type="text/javascript"></script>
+<script src="./../cmsimde/static/ace/snippets/python.js" type="text/javascript"></script>
+</p>
+<p><!-- 請注意, 這裡使用 Javascript 將 localStorage["py_src"] 中存在近端瀏覽器的程式碼, 由使用者決定存檔名稱--></p>
+<p>
+<script type="text/javascript">
+function doSave(storage_id, filename){
+    var blob = new Blob([localStorage[storage_id]], {type: "text/plain;charset=utf-8"});
+    filename = document.getElementById(filename).value
+    saveAs(blob, filename+".py");
+}
 </script>
 </p>
-<!-- 接下來將 mp4 檔案從 downloads 目錄取出 -->
-<div class="winkVideoContainerClass"><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="./../cmsimde/static" data-varname="winkVideoData" height="630" muted="true" width="1008">
-<source src="./../downloads/winkVideoData.mp4" type="video/mp4"/></video>
-<div class="winkVideoOverlayClass"></div>
-<div class="winkVideoControlBarClass"><button class="winkVideoControlBarPlayButtonClass"></button> <button class="winkVideoControlBarPauseButtonClass"></button>
-<div class="winkVideoControlBarProgressLeftClass"></div>
-<div class="winkVideoControlBarProgressEmptyMiddleClass"></div>
-<div class="winkVideoControlBarProgressRightClass"></div>
-<div class="winkVideoControlBarProgressFilledMiddleClass"></div>
-<div class="winkVideoControlBarProgressThumbClass"></div>
+<p><!-- 印出版次與關鍵字程式 --></p>
+<p>
+<script type="text/python3">
+from browser import document as doc
+import ace
+# 清除畫布
+def clear_bd(ev):
+    bd = doc["brython_div"]
+    bd.clear()
+# Brython 3.3.4 內建的 container 名稱為  'container' 且 turtle 輸出為 svg 必須使用 div 訂定 id
+Ace = ace.Editor(editor_id="kw_editor", console_id="kw_console", container_id="kw__container", storage_id="kw_py_src" )
+# 從 gist 取出程式碼後, 放入 editor 作為 default 程式
+def run():
+    # 利用 get 取下 src 變數值
+    try:
+        url = doc.query["src"]
+    except:
+        url = "https://gist.githubusercontent.com/KEHUEISIN/867287f8d3a5b80c7caed5e0758c8a4c/raw/00b25fd40442b13399c76d74ca74c3c83f86d2c2/31.py"
+    prog = open(url).read()
+
+    # 將程式載入編輯區
+    Ace.editor.setValue(prog)
+    Ace.editor.scrollToRow(0)
+    Ace.editor.gotoLine(0)
+    # 直接執行程式
+    #ns = {'__name__':'__main__'}
+    #exec(prog, ns)
+    # 按下 run 按鈕
+    Ace.run()
+
+# 執行程式, 顯示輸出結果與清除輸出結果及對應按鈕綁定
+doc['kw_run'].bind('click', Ace.run)
+doc['kw_show_console'].bind('click', Ace.show_console)
+doc['kw_clear_console'].bind('click', Ace.clear_console)
+doc['clear_bd'].bind('click', clear_bd)
+# 呼叫函式執行
+run()
+</script>
+</p>
+<p><!-- 用來顯示程式碼的 editor 區域 --></p>
+<div id="kw_editor" style="width: 600px; height: 300px;"></div>
+<p><!-- 以下的表單與按鈕與前面的 Javascript doSave 函式以及 FileSaver.min.js 互相配合 --></p>
+<!-- 存擋表單開始 --><form><label>Filename: <input id="kw_filename" placeholder="input file name" type="text"/>.py</label> <input onclick="doSave('kw_py_src', 'kw_filename');" type="submit" value="Save"/></form><!-- 存擋表單結束 -->
+<p></p>
+<!-- 執行與清除按鈕開始 -->
+<p><button id="kw_run">Run</button> <button id="kw_show_console">Output</button> <button id="kw_clear_console">清除輸出區</button><button id="clear_bd">清除繪圖區</button><button onclick="window.location.reload()">Reload</button></p>
+<!-- 執行與清除按鈕結束 -->
+<p></p>
+<!-- 程式執行 ouput 區 -->
+<div style="width: 100%; height: 100%;"><textarea autocomplete="off" id="kw_console"></textarea></div>
+<!-- Brython 程式執行的結果, 都以 brython_div 作為切入位置 -->
+<div id="brython_div"></div>
+<div><span style="color: #ff00ff;">欽入網頁python框架:</span></div>
+<div><span style="color: #ff00ff;"></span></div>
+<div>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;!-- 導入 brython 程式庫 --&gt;
+&lt;script src="./../cmsimde/static/brython.js"&gt;&lt;/script&gt;
+&lt;script src="./../cmsimde/static/brython_stdlib.js"&gt;&lt;/script&gt;
+&lt;!-- 啟動 Brython --&gt;
+&lt;script&gt;// &lt;![CDATA[
+window.onload=function(){
+brython({debug:1, pythonpath:['./../cmsimde/static/','./../downloads/py/']});
+}
+// ]]&gt;&lt;/script&gt;
+&lt;p&gt;&lt;!-- 導入 FileSaver 與 filereader --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/FileSaver.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/filereader.js"&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;!-- 導入 ace --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/ace.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/ext-language_tools.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/mode-python3.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/ace/snippets/python.js"&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;!-- 請注意, 這裡使用 Javascript 將 localStorage["py_src"] 中存在近端瀏覽器的程式碼, 由使用者決定存檔名稱--&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;script type="text/javascript"&gt;// &lt;![CDATA[
+function doSave(storage_id, filename){
+    var blob = new Blob([localStorage[storage_id]], {type: "text/plain;charset=utf-8"});
+    filename = document.getElementById(filename).value
+    saveAs(blob, filename+".py");
+}
+// ]]&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;!-- 印出版次與關鍵字程式 --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;script type="text/python3"&gt;// &lt;![CDATA[
+from browser import document as doc
+import ace
+# 清除畫布
+def clear_bd(ev):
+    bd = doc["brython_div"]
+    bd.clear()
+# Brython 3.3.4 內建的 container 名稱為  'container' 且 turtle 輸出為 svg 必須使用 div 訂定 id
+Ace = ace.Editor(editor_id="kw_editor", console_id="kw_console", container_id="kw__container", storage_id="kw_py_src" )
+# 從 gist 取出程式碼後, 放入 editor 作為 default 程式
+def run():
+    # 利用 get 取下 src 變數值
+    try:
+        url = doc.query["src"]
+    except:
+        url = "插入個人gists中的程式文字檔網址"
+    prog = open(url).read()
+
+    # 將程式載入編輯區
+    Ace.editor.setValue(prog)
+    Ace.editor.scrollToRow(0)
+    Ace.editor.gotoLine(0)
+    # 直接執行程式
+    #ns = {'__name__':'__main__'}
+    #exec(prog, ns)
+    # 按下 run 按鈕
+    Ace.run()
+
+# 執行程式, 顯示輸出結果與清除輸出結果及對應按鈕綁定
+doc['kw_run'].bind('click', Ace.run)
+doc['kw_show_console'].bind('click', Ace.show_console)
+doc['kw_clear_console'].bind('click', Ace.clear_console)
+doc['clear_bd'].bind('click', clear_bd)
+# 呼叫函式執行
+run()
+// ]]&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;!-- 用來顯示程式碼的 editor 區域 --&gt;&lt;/p&gt;
+&lt;div id="kw_editor" style="width: 600px; height: 300px;"&gt;&lt;/div&gt;
+&lt;p&gt;&lt;!-- 以下的表單與按鈕與前面的 Javascript doSave 函式以及 FileSaver.min.js 互相配合 --&gt;&lt;/p&gt;
+&lt;!-- 存擋表單開始 --&gt;&lt;form&gt;&lt;label&gt;Filename: &lt;input id="kw_filename" placeholder="input file name" type="text"&gt;.py&lt;/label&gt; &lt;input onclick="doSave('kw_py_src', 'kw_filename');" type="submit" value="Save"&gt;&lt;/form&gt;&lt;!-- 存擋表單結束 --&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;!-- 執行與清除按鈕開始 --&gt;
+&lt;p&gt;&lt;button id="kw_run"&gt;Run&lt;/button&gt; &lt;button id="kw_show_console"&gt;Output&lt;/button&gt; &lt;button id="kw_clear_console"&gt;清除輸出區&lt;/button&gt;&lt;button id="clear_bd"&gt;清除繪圖區&lt;/button&gt;&lt;button onclick="window.location.reload()"&gt;Reload&lt;/button&gt;&lt;/p&gt;
+&lt;!-- 執行與清除按鈕結束 --&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;!-- 程式執行 ouput 區 --&gt;
+&lt;div style="width: 100%; height: 100%;"&gt;&lt;textarea autocomplete="off" id="kw_console"&gt;&lt;/textarea&gt;&lt;/div&gt;
+&lt;!-- Brython 程式執行的結果, 都以 brython_div 作為切入位置 --&gt;
+&lt;div id="brython_div"&gt;&lt;/div&gt;
+&lt;div&gt;&lt;span style="color: #ff00ff;"&gt;欽入網頁python框架:&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;&lt;span style="color: #ff00ff;"&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;</pre>
 </div>
-<div class="winkVideoPlayOverlayClass"></div>
-</div>
-<br />Github << <a href='Github.html'>Previous</a> <a href='Wink.html'>Next</a> >> Wink</div>
+<br />報告2 << <a href='報告2.html'>Previous</a> <a href='Experience:.html'>Next</a> >> Experience:</div>
         
     <!-- footer -->
       <div class="container">
